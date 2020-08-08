@@ -24,8 +24,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Sync data
       env:
-        GIKI_USERNAME: ${{ secrets.GIKI_USERNAME }}
-        GIKI_TOKEN: ${{ secrets.GIKI_TOKEN }}
+        giki_username: ${{ secrets.GIKI_USERNAME }}
+        giki_token: ${{ secrets.GIKI_TOKEN }}
       run: node sync.js
     - run: git add src/assets/data.json
     - run: git commit -m "Sync data"
