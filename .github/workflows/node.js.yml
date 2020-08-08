@@ -1,0 +1,37 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Sync data regularly
+
+on:
+  schedule:
+    - cron: '0 * * * *' # runs every hour
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Sync data
+      env:
+        GIKI_USERNAME: ${{ secrets.GIKI_USERNAME }}
+        GIKI_TOKEN: ${{ secrets.GIKI_TOKEN }}
+      run: node sync.js
+    - run: git add src/assets/data.json
+    - run: git commit -m "Sync data"
+    - name: push change
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git push https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+      
