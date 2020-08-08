@@ -1,5 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
+const db = require('./src/assets/data.json');
 const client = axios.default.create({
   baseURL: 'https://giki.app/api',
   headers: {
@@ -19,6 +20,10 @@ client.get('talks/query', {
 
   // total count
   console.log(`total count = ${resp.data.count}`)
+  if (db.length == resp.data.count) {
+    console.log('no new data to sync');
+    return;
+  }
 
   // all data
   resp.data.data.forEach(t => {
@@ -68,4 +73,7 @@ client.get('talks/query', {
   //   console.error(errs)
   // })
 
-}).catch(err => console.error(err)).finally("finished")
+}).catch(err => console.error(err)).finally(() => {
+  // update lastupdated file
+  fs.writeFileSync('.lastupdated', 'last updated at : ' + Date.now());
+})
