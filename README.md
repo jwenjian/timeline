@@ -1,5 +1,7 @@
 # timeline
 
+> Timeline css is based on [https://codepen.io/christian-fei/pen/BJily](https://codepen.io/christian-fei/pen/BJily)
+
 ## Project setup
 ```
 yarn install

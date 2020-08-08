@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    <img id="avatar" alt="Avatar" src="./assets/logo.jpeg">
     <Timeline/>
   </div>
 </template>
@@ -24,5 +24,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 10px;
+}
+
+#avatar {
+  border-radius: 100%;
+  width: 200px;
 }
 </style>
