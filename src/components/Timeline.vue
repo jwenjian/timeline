@@ -16,7 +16,7 @@
 <script>
 const MarkdownIt = require("markdown-it");
 const md = new MarkdownIt();
-const events = require('../assets/data.json');
+const events = require("../assets/data.json");
 export default {
   name: "HelloWorld",
   data() {
@@ -31,20 +31,25 @@ export default {
   },
   mounted() {
     this.events = events;
-    this.events.map(
-      (e) => (e.htmlContent = this.mdRender(e.content))
-    );
+    this.events.map((e) => {
+      e.htmlContent = this.mdRender(e.content);
+      let d = new Date(Date.parse(e.timestamp));
+      e.timestamp = `${d.getMonth() > 9 ? "" : "0"}${d.getMonth() + 1}-${
+        d.getDate() > 9 ? "" : "0"
+      }${d.getDate()} ${
+        d.getHours() > 9 ? "" : "0"
+      }${d.getHours()}:${d.getMinutes()}`;
+    });
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-@import url('/css/ie.css');
-@import url('/css/print.css');
-@import url('/css/screen.css');
-@import url('/css/timeline.css');
-
+@import url("/css/ie.css");
+@import url("/css/print.css");
+@import url("/css/screen.css");
+@import url("/css/timeline.css");
 
 /* line 166, ../sass/timeline.scss */
 .event .meta {
@@ -91,5 +96,4 @@ export default {
   overflow-y: hidden;
   text-align: left;
 }
-
 </style>
