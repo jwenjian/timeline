@@ -4,6 +4,7 @@
 name: Sync data regularly
 
 on:
+  gollum:
   schedule:
     - cron: '0 * * * *' # runs every hour
 
