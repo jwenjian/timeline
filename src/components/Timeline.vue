@@ -1,13 +1,7 @@
 <template>
   <div class="hello">
-    <br />
-    <span class="padd center">
-      Do I need to tell you to resize your browser window?
-      <br />*cough* responsive *cough*
-    </span>
-    <h1 class="padd">v2.0</h1>
     <ul class="timeline">
-      <li class="year first">2013</li>
+      <li class="year first">2020</li>
       <li class="event" v-for="e in events" :key="e.id">
         <span class="meta">
           <span class="time">{{ e.timestamp }}</span>
@@ -29,9 +23,6 @@ export default {
     return {
       events: [],
     };
-  },
-  props: {
-    msg: String,
   },
   methods: {
     mdRender(mdStr) {
@@ -96,7 +87,9 @@ export default {
 }
 
 .event .md-result {
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: left;
 }
 
 </style>
