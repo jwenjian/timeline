@@ -6,7 +6,7 @@ name: Sync data regularly
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *' # runs every hour
+    - cron: '0 0 * * *' # runs every day
 
 jobs:
   build:
