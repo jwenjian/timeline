@@ -31,8 +31,10 @@ jobs:
         giki_token: ${{ secrets.GIKI_TOKEN }}
       run: node sync.js
     - name: Config git user info
+      env: 
+        GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
       run: |
-          git config --global user.email "wenjian.jiang@foxmail.com"
+          git config --global user.email $GIT_USER_EMAIL
           git config --global user.name $GITHUB_ACTOR
     - run: git add .
     - run: git commit -m "Sync data"
