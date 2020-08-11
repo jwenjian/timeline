@@ -1,45 +1,81 @@
 <template>
   <div class="hello">
-    <ul class="timeline">
-      <li class="year first">2020</li>
-      <li class="event" v-for="e in events" :key="e.id">
-        <span class="meta">
-          <span class="time">{{ e.timestamp }}</span>
-          <span class="tag" v-for="t in e.tags" :key="t">{{ t }}</span>
-        </span>
-        <div class="md-result" v-html="e.htmlContent"></div>
-      </li>
-    </ul>
+    <pull-to :bottom-load-method="loadNextPage">
+      <ul class="timeline">
+        <li class="year first">2020</li>
+        <li class="event" v-for="e in events" :key="e.id">
+          <span class="meta">
+            <span class="time">{{ e.timestamp }}</span>
+            <span class="tag" v-for="t in e.tags" :key="t">{{ t }}</span>
+          </span>
+          <div class="md-result" v-html="e.htmlContent"></div>
+        </li>
+      </ul>
+    </pull-to>
   </div>
 </template>
 
 <script>
 const MarkdownIt = require("markdown-it");
 const md = new MarkdownIt();
-const events = require("../assets/data.json");
+const axios = require("axios");
+import PullTo from "vue-pull-to";
+
 export default {
   name: "HelloWorld",
+  components: {
+    PullTo,
+  },
   data() {
     return {
       events: [],
+      currentPage: 0,
+      maxPage: 0,
     };
   },
   methods: {
     mdRender(mdStr) {
       return md.render(mdStr);
     },
+    loadNextPage(loaded) {
+      console.log("load next page");
+      console.log(this.currentPage);
+      axios.default
+        .create()
+        .get(`/data/data-${this.currentPage}.json`)
+        .then((resp) => {
+          for (let i = 0; i < resp.data.length; i++) {
+            this.events.push(resp.data[i]);
+          }
+          this.events.map((e) => {
+            e.htmlContent = this.mdRender(e.content);
+            let d = new Date(Date.parse(e.timestamp));
+            e.timestamp = `${d.getMonth() > 9 ? "" : "0"}${d.getMonth() + 1}-${
+              d.getDate() > 9 ? "" : "0"
+            }${d.getDate()} ${
+              d.getHours() > 9 ? "" : "0"
+            }${d.getHours()}:${d.getMinutes()}`;
+          });
+          this.currentPage = this.currentPage + 1;
+          if (loaded) {
+            loaded("done");
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 404) {
+            if (loaded) {
+              loaded("done");
+            }
+          } else {
+            if (loaded) {
+              loaded("fail");
+            }
+          }
+        });
+    },
   },
   mounted() {
-    this.events = events;
-    this.events.map((e) => {
-      e.htmlContent = this.mdRender(e.content);
-      let d = new Date(Date.parse(e.timestamp));
-      e.timestamp = `${d.getMonth() > 9 ? "" : "0"}${d.getMonth() + 1}-${
-        d.getDate() > 9 ? "" : "0"
-      }${d.getDate()} ${
-        d.getHours() > 9 ? "" : "0"
-      }${d.getHours()}:${d.getMinutes()}`;
-    });
+    this.loadNextPage(null);
   },
 };
 </script>

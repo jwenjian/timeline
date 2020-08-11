@@ -10,6 +10,7 @@ const client = axios.default.create({
 })
 
 const talks = [];
+const event_per_page = 20;
 
 client.get('talks/query', {
   params: {
@@ -20,10 +21,6 @@ client.get('talks/query', {
 
   // total count
   console.log(`total count = ${resp.data.count}`)
-  if (db.length == resp.data.count) {
-    console.log('no new data to sync');
-    return;
-  }
 
   // all data
   resp.data.data.forEach(t => {
@@ -37,7 +34,12 @@ client.get('talks/query', {
   })
 
   console.log(talks.length);
-  fs.writeFileSync('src/assets/data.json', JSON.stringify(talks));
+  let times = Math.floor(resp.data.count / event_per_page);
+  for (let index = 0; index <= times; index++) {
+    let page_data = talks.slice(index * event_per_page, index * event_per_page + event_per_page)
+    fs.writeFileSync('public/data/data-' + index + ".json", JSON.stringify(page_data));
+  }
+  // fs.writeFileSync('src/assets/data.json', JSON.stringify(talks));
 
   // request by page
   // let times = Math.floor(resp.data.count / resp.data.data.length);
