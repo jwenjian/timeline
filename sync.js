@@ -1,6 +1,5 @@
 const fs = require('fs');
 const axios = require('axios');
-const db = require('./src/assets/data.json');
 const client = axios.default.create({
   baseURL: 'https://giki.app/api',
   headers: {
