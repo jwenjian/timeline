@@ -1,17 +1,15 @@
 <template>
   <div class="hello">
-    <pull-to :bottom-load-method="loadNextPage">
-      <ul class="timeline">
-        <li class="year first">2020</li>
-        <li class="event" v-for="e in events" :key="e.id">
-          <span class="meta">
-            <span class="time">{{ e.timestamp }}</span>
-            <span class="tag" v-for="t in e.tags" :key="t">{{ t }}</span>
-          </span>
-          <div class="md-result" v-html="e.htmlContent"></div>
-        </li>
-      </ul>
-    </pull-to>
+    <ul class="timeline">
+      <li class="year first">2020</li>
+      <li class="event" v-for="e in events" :key="e.id">
+        <span class="meta">
+          <span class="time">{{ e.timestamp }}</span>
+          <span class="tag" v-for="t in e.tags" :key="t">{{ t }}</span>
+        </span>
+        <div class="md-result" v-html="e.htmlContent"></div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -19,13 +17,9 @@
 const MarkdownIt = require("markdown-it");
 const md = new MarkdownIt();
 const axios = require("axios");
-import PullTo from "vue-pull-to";
 
 export default {
-  name: "HelloWorld",
-  components: {
-    PullTo,
-  },
+  name: "Timeline",
   data() {
     return {
       events: [],
@@ -37,9 +31,7 @@ export default {
     mdRender(mdStr) {
       return md.render(mdStr);
     },
-    loadNextPage(loaded) {
-      console.log("load next page");
-      console.log(this.currentPage);
+    loadNextPage() {
       axios.default
         .create()
         .get(`/data/data-${this.currentPage}.json`)
@@ -57,19 +49,12 @@ export default {
             }${d.getHours()}:${d.getMinutes()}`;
           });
           this.currentPage = this.currentPage + 1;
-          if (loaded) {
-            loaded("done");
-          }
         })
         .catch((err) => {
           if (err.response.status === 404) {
-            if (loaded) {
-              loaded("done");
-            }
+            console.log("no more data");
           } else {
-            if (loaded) {
-              loaded("fail");
-            }
+            console.log("fail");
           }
         });
     },
