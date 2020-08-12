@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div v-infinite-scroll="loadNextPage" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
     <ul class="timeline">
       <li class="year first">2020</li>
       <li class="event" v-for="e in events" :key="e.id">
@@ -8,6 +8,9 @@
           <span class="tag" v-for="t in e.tags" :key="t">{{ t }}</span>
         </span>
         <div class="md-result" v-html="e.htmlContent"></div>
+      </li>
+      <li class="event" v-show="allLoaded">
+        - End -
       </li>
     </ul>
   </div>
@@ -24,7 +27,8 @@ export default {
     return {
       events: [],
       currentPage: 0,
-      maxPage: 0,
+      busy: false,
+      allLoaded: false
     };
   },
   methods: {
@@ -32,6 +36,10 @@ export default {
       return md.render(mdStr);
     },
     loadNextPage() {
+      if (this.allLoaded) {
+        return;
+      }
+      this.busy = true;
       axios.default
         .create()
         .get(`/data/data-${this.currentPage}.json`)
@@ -49,13 +57,16 @@ export default {
             }${d.getHours()}:${d.getMinutes()}`;
           });
           this.currentPage = this.currentPage + 1;
+          this.busy = false;
         })
         .catch((err) => {
           if (err.response.status === 404) {
+            this.allLoaded = true;
             console.log("no more data");
           } else {
             console.log("fail");
           }
+          this.busy = false;
         });
     },
   },
