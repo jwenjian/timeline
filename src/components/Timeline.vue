@@ -84,6 +84,37 @@ export default {
 @import url("/css/print.css");
 @import url("/css/screen.css");
 @import url("/css/timeline.css");
+@media (prefers-color-scheme: dark) {
+  /* Dark theme styles go here */
+  :root {
+    --event-bg-color: #ffdd40;
+    --color: white;
+    --link-color: #1b644c;
+  }
+
+  .event {
+    border: 1px dashed #505050;
+    background-color: #121212;
+  }
+
+  .timeline .event:hover {
+    background: #777777;
+    color: #121212;
+  }
+
+  .event .tag {
+    background-color: #ddcc7e;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  /* Light theme styles go here */
+  :root {
+    --event-bg-color: #505050;
+    --color: #2c3e50;
+    --link-color: #025539;
+  }
+}
 
 /* line 166, ../sass/timeline.scss */
 .event .meta {
@@ -95,8 +126,8 @@ export default {
 
 /* line 170, ../sass/timeline.scss */
 .event .time {
-  background-color: #505050;
-  color: white;
+  background-color: var(--event-bg-color);
+  color: var(--color);
   padding: 0 0.5em;
   width: auto;
   float: none;
@@ -109,7 +140,7 @@ export default {
 /* line 180, ../sass/timeline.scss */
 .event .tag {
   background-color: #ffdd40;
-  color: #505050;
+  color: var(--color);
   width: auto;
   padding: 0 0.5em;
   display: inline-block;
