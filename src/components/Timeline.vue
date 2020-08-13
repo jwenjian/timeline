@@ -1,5 +1,9 @@
 <template>
-  <div v-infinite-scroll="loadNextPage" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+  <div
+    v-infinite-scroll="loadNextPage"
+    infinite-scroll-disabled="busy"
+    infinite-scroll-distance="50"
+  >
     <ul class="timeline">
       <li class="year first">2020</li>
       <li class="event" v-for="e in events" :key="e.id">
@@ -9,9 +13,7 @@
         </span>
         <div class="md-result" v-html="e.htmlContent"></div>
       </li>
-      <li class="event" v-show="allLoaded">
-        - End -
-      </li>
+      <li class="event" v-show="allLoaded">- End -</li>
     </ul>
   </div>
 </template>
@@ -28,7 +30,7 @@ export default {
       events: [],
       currentPage: 0,
       busy: false,
-      allLoaded: false
+      allLoaded: false,
     };
   },
   methods: {
@@ -52,9 +54,9 @@ export default {
             let d = new Date(Date.parse(e.timestamp));
             e.timestamp = `${d.getMonth() > 9 ? "" : "0"}${d.getMonth() + 1}-${
               d.getDate() > 9 ? "" : "0"
-            }${d.getDate()} ${
-              d.getHours() > 9 ? "" : "0"
-            }${d.getHours()}:${d.getMinutes()}`;
+            }${d.getDate()} ${d.getHours() > 9 ? "" : "0"}${d.getHours()}:${
+              d.getMinutes() > 9 ? "" : "0"
+            }${d.getMinutes()}`;
           });
           this.currentPage = this.currentPage + 1;
           this.busy = false;
