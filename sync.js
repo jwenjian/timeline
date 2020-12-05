@@ -1,7 +1,7 @@
 const fs = require('fs');
 const axios = require('axios');
 const client = axios.default.create({
-  baseURL: 'https://giki.app/api',
+  baseURL: 'https://api.giki.app/',
   headers: {
     'authorization': 'Basic ' + process.env['giki_token'],
     'content-type': 'application/json'
@@ -11,7 +11,7 @@ const client = axios.default.create({
 const talks = [];
 const event_per_page = 20;
 
-client.get('talks/query', {
+client.get('talks', {
   params: {
     'name': process.env['giki_username'],
     'page': -1 // page = -1 means all data
