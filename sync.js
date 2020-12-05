@@ -13,7 +13,7 @@ const event_per_page = 20;
 
 client.get('talks/query', {
   params: {
-    'user_name': process.env['giki_username'],
+    'name': process.env['giki_username'],
     'page': -1 // page = -1 means all data
   }
 }).then(resp => {
