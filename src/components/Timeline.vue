@@ -88,7 +88,7 @@ export default {
   /* Dark theme styles go here */
   :root {
     --event-bg-color: #ffdd40;
-    --color: white;
+    --color: #c9d1d9;
     --link-color: #1b644c;
   }
 
@@ -102,8 +102,8 @@ export default {
     color: #121212;
   }
 
-  .event .tag {
-    background-color: #ddcc7e;
+  .timeline .event {
+    color: #c9d1d9;
   }
 }
 
@@ -139,7 +139,6 @@ export default {
 
 /* line 180, ../sass/timeline.scss */
 .event .tag {
-  background-color: #ffdd40;
   color: var(--color);
   width: auto;
   padding: 0 0.5em;
