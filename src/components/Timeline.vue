@@ -5,14 +5,16 @@
     infinite-scroll-distance="50"
   >
     <ul class="timeline">
-      <li class="year first">2020</li>
-      <li class="event" v-for="e in events" :key="e.id">
-        <span class="meta">
-          <span class="time">{{ e.timestamp }}</span>
-          <span class="tag" v-for="t in e.tags" :key="t">{{ t }}</span>
-        </span>
-        <div class="md-result" v-html="e.htmlContent"></div>
-      </li>
+      <template v-for="y in yearIndexs">
+        <li class="year first" :key="y">{{ y }}</li>
+        <li class="event" v-for="e in years[y]" :key="e.id">
+          <span class="meta">
+            <span class="time">{{ e.timestamp }}</span>
+            <span class="tag" v-show="e.tags.length > 0">{{ e.tags[0] }}</span>
+          </span>
+          <div class="md-result" v-html="e.htmlContent"></div>
+        </li>
+      </template>
       <li class="event" v-show="allLoaded">- End -</li>
     </ul>
   </div>
@@ -27,7 +29,8 @@ export default {
   name: "Timeline",
   data() {
     return {
-      events: [],
+      yearIndexs: [],
+      years: {},
       currentPage: 0,
       busy: false,
       allLoaded: false,
@@ -46,18 +49,21 @@ export default {
         .create()
         .get(`/data/data-${this.currentPage}.json`)
         .then((resp) => {
-          for (let i = 0; i < resp.data.length; i++) {
-            this.events.push(resp.data[i]);
-          }
-          this.events.map((e) => {
+          let data = resp.data;
+          data.map((e) => {
             e.htmlContent = this.mdRender(e.content);
             let d = new Date(Date.parse(e.timestamp));
+            e.year = d.getFullYear();
             e.timestamp = `${d.getMonth() > 9 ? "" : "0"}${d.getMonth() + 1}-${
               d.getDate() > 9 ? "" : "0"
             }${d.getDate()} ${d.getHours() > 9 ? "" : "0"}${d.getHours()}:${
               d.getMinutes() > 9 ? "" : "0"
             }${d.getMinutes()}`;
           });
+          this.seperateByYear(data);
+          // for (let i = 0; i < data.length; i++) {
+          //   this.events.push(data[i]);
+          // }
           this.currentPage = this.currentPage + 1;
           this.busy = false;
         })
@@ -70,6 +76,16 @@ export default {
           }
           this.busy = false;
         });
+    },
+    seperateByYear(newData) {
+      newData.forEach((e) => {
+        let year_key = e.year;
+        if (this.yearIndexs.findIndex(i => i === year_key) === -1) {
+          this.years[year_key] = [];
+          this.yearIndexs.push(year_key)
+        }
+        this.years[year_key].push(e);
+      });
     },
   },
   mounted() {
